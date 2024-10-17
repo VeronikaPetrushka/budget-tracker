@@ -10,6 +10,9 @@ const Icons = ({ type }) => {
     case 'add':
         imageSource = require('../assets/common/add.png');
         break;
+    case 'minus':
+        imageSource = require('../assets/common/minus.png');
+        break;
 
     // case 'close':
     //   imageSource = require('../assets/common/close.png');

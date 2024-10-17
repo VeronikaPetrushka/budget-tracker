@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { View, Text,TouchableOpacity, StyleSheet, Dimensions } from "react-native"
+import { useNavigation } from "@react-navigation/native";
 import Welcome from "./Welcome";
 import Expenses from "./Expenses";
 import Goals from "./Goals";
@@ -8,12 +9,17 @@ import Crown from "./Crown";
 const { height, width } = Dimensions.get('window');
 
 const Home = () => {
+    const navigation = useNavigation();
     const [componentIndex, setComponentIndex] = useState(0);
 
     const components = [ <Welcome />, <Expenses />, <Goals />, <Crown /> ]
 
     const handleButtonPress = () => {
         setComponentIndex((prevIndex) => (prevIndex + 1) % components.length);
+
+        if(componentIndex === 3) {
+            navigation.navigate('BudgetScreen')
+        }
     };
 
     return (
