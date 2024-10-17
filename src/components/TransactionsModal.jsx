@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, TextInput, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Icons from './Icons';
 
@@ -38,12 +38,12 @@ const TransactionsModal = ({ visible, onClose }) => {
         }
 
         if (!goal) {
-            newErrors.goal = 'A valid goal is required';
+            newErrors.goal = 'Goal is required';
             valid = false;
         }
 
         if (!date) {
-            newErrors.date = 'A valid date is required';
+            newErrors.date = 'Date is required';
             valid = false;
         }
 
@@ -236,6 +236,13 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '300',
         color: '#ff5b5b'
+    },
+    error: {
+        fontSize: 12,
+        fontWeight: '300',
+        color: 'red',
+        marginBottom: 10,
+        marginTop: -7
     }
 });
 
