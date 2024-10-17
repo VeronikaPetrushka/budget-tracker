@@ -10,10 +10,18 @@ const Icons = ({ type }) => {
     case 'add':
         imageSource = require('../assets/common/add.png');
         break;
+    case 'waste':
+        imageSource = require('../assets/common/waste.png');
+        break;
+    case 'plus':
+        imageSource = require('../assets/common/plus.png');
+        break;
     case 'minus':
         imageSource = require('../assets/common/minus.png');
         break;
-
+    case 'calendar':
+        imageSource = require('../assets/common/calendar.png');
+        break;
     // case 'close':
     //   imageSource = require('../assets/common/close.png');
     //   iconStyle = styles.closeIcon;

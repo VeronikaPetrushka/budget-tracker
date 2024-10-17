@@ -1,9 +1,27 @@
+import React, { useState } from "react";
 import { StyleSheet, View, TouchableOpacity, Text, Image, Dimensions } from "react-native"
+import TransactionsModal from "./TransactionsModal";
 import Icons from "./Icons"
 
-const { height, width } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 const Budget = () => {
+    const [transactionModalVisible, setTransactionModalVisible] = useState(false);
+    const [goalModalVisible, setGoalModalVisible] = useState(false);
+    const [limitModalVisible, setLimitModalVisible] = useState(false);
+
+    const handleTransactionModalVisible = () => {
+        setTransactionModalVisible(!transactionModalVisible);
+    };
+
+    const handleGoalModalVisible = () => {
+        setGoalModalVisible(!goalModalVisible);
+    };
+
+    const handleLimitModalVisible = () => {
+        setLimitModalVisible(!limitModalVisible);
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.balanceContainer}>
@@ -14,17 +32,17 @@ const Budget = () => {
                     </View>
                     <Text style={styles.balanceText}>00.000$</Text>
                     <View style={styles.balanceBtnContainer}>
-                        <TouchableOpacity style={styles.balanceAddBtn}>
+                        <TouchableOpacity style={styles.balanceAddBtn} onPress={() => handleTransactionModalVisible()}>
                             <View style={styles.icon}>
                                 <Icons type={'add'}/>
                             </View>
                             <Text style={styles.balanceBtnText}>Add</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.balanceWasteBtn}>
+                        <TouchableOpacity style={styles.balanceWasteBtn} onPress={() => handleTransactionModalVisible()}>
                             <View style={styles.icon}>
-                                <Icons type={'minus'}/>
+                                <Icons type={'waste'}/>
                             </View>
-                            <Text style={styles.balanceBtnText}>Add</Text>
+                            <Text style={styles.balanceBtnText}>Waste</Text>
                         </TouchableOpacity>
                     </View>
                     <Image source={require('../assets/decor/crown-small.png')} style={styles.crownSmall}/>
@@ -58,6 +76,9 @@ const Budget = () => {
                     <Text style={styles.noTransText}>Here will be your transactions</Text>
                 </View>
             </View>
+
+            <TransactionsModal visible={transactionModalVisible} onClose={handleTransactionModalVisible}/>
+
         </View>
     )
 };
@@ -69,7 +90,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         padding: 23,
-        paddingTop: height * 0.075,
+        paddingTop: height * 0.07,
         backgroundColor: '#fff'
     },
     balanceContainer: {
