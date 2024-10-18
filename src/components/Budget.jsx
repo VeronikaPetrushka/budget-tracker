@@ -6,7 +6,6 @@ import GoalModal from "./GoalModal";
 import TopUpGoalModal from "./TopUpGoalModal";
 import ProgressBar from "./ProgressBar";
 import Icons from "./Icons"
-import { todayString } from "react-native-calendars/src/expandableCalendar/commons";
 
 const { height } = Dimensions.get('window');
 
@@ -127,8 +126,8 @@ const Budget = () => {
     // };
 
     const formatDate = (date) => {
-        const day = String(date.getDate()).padStart(2, '0'); // Add leading zero if needed
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
     
         return `${day}.${month}.${year}`;
