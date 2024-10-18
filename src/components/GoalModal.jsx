@@ -4,72 +4,47 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Calendar } from 'react-native-calendars';
 import Icons from './Icons';
 
-const TransactionsModal = ({ visible, onClose, transactionType, onSubmit }) => {
-    const [transaction, setTransaction] = useState('00.000');
-    const [name, setName] = useState('');
+const GoalModal = ({ visible, onClose }) => {
+    const [amount, setAmount] = useState('00.000');
+    const [goal, setGoal] = useState('');
     const [date, setDate] = useState(new Date());
     const [showCalendar, setShowCalendar] = useState(false);
     const [errors, setErrors] = useState({
-        transaction: '',
-        name: '',
+        amount: '',
+        goal: '',
         date: '',
     });
 
     useEffect(() => {
         if (visible) {
             setDate(new Date());
-            setTransaction('00.000');
-            setName('');
-            setErrors({ transaction: '', name: '', date: ''});
+            setAmount('00.000');
+            setGoal('');
+            setErrors({ amount: '', goal: '', date: ''});
         }
     }, [visible]);
 
-    const handleTransactionType = () => {
-        if (transaction === '00.000') {
-            return{
-                color: '#8e8e8e'
-            }
-        }
-
-        if (transactionType === 'add') {
-            return {
-                color: '#14b910'
-            };
-        } else {
-            return {
-                color: '#f66233'
-            };
-        };
-    };
-    
-    const getTransactionWithSign = () => {
-        if (transaction === '00.000') {
-            return transaction + '$';
-        }
-
-        if (transactionType === 'add') {
-            return `+ ${transaction}$`;
-        } else {
-            return `- ${transaction}$`;
-        }
+    const handleAmountChange = (value) => {
+        const formattedValue = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+        setAmount(formattedValue);
     };
 
-    const incrementTransaction = () => {
-        const currentTransaction = parseFloat(transaction) || 0;
-        const newTransaction = currentTransaction + 25;
-        setTransaction(newTransaction.toFixed(3));
+    const incrementAmount = () => {
+        const currentAmount = parseFloat(amount) || 0;
+        const newAmount = currentAmount + 25;
+        setAmount(newAmount.toFixed(3));
     };
 
-    const decrementTransaction = () => {
-        const currentTransaction = parseFloat(transaction) || 0;
-        const newTransaction = currentTransaction - 25;
-        setTransaction(newTransaction > 0 ? newTransaction.toFixed(3) : '00.000');
+    const decrementAmount = () => {
+        const currentAmount = parseFloat(amount) || 0;
+        const newAmount = currentAmount - 25;
+        setAmount(newAmount > 0 ? newAmount.toFixed(3) : '00.000');
     };
 
     const isMinusDisabled = () => {
-        const transactionValue = parseFloat(transaction) || 0;
+        const amountValue = parseFloat(amount) || 0;
     
-        if (transactionValue <= 0) {
+        if (amountValue <= 0) {
             return true;
         }
     
@@ -81,27 +56,30 @@ const TransactionsModal = ({ visible, onClose, transactionType, onSubmit }) => {
         setShowCalendar(false);
     };
 
-    const handleTransactionChange = (value) => {
-        const formattedValue = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
-        setTransaction(formattedValue);
-    };
-
     const validateForm = () => {
         let valid = true;
         const newErrors = {};
 
-        if (!transaction || parseFloat(transaction) === 0) {
-            newErrors.transaction = 'Transaction is required';
+        if (!amount || parseFloat(amount) === 0) {
+            newErrors.amount = 'Amount is required';
             valid = false;
         }
 
-        if (!name) {
-            newErrors.name = 'Name is required';
+        if (!goal) {
+            newErrors.goal = 'Goal is required';
             valid = false;
         }
 
         if (!date) {
             newErrors.date = 'Date is required';
+            valid = false;
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (date <= today) {
+            newErrors.date = 'Please select a future date.';
             valid = false;
         }
 
@@ -111,30 +89,29 @@ const TransactionsModal = ({ visible, onClose, transactionType, onSubmit }) => {
 
     const handleSubmit = async () => {
         if (validateForm()) {
-            const transactionDetails = {
-                transactionType,
+            const goalDetails = {
                 date: date.toLocaleDateString(),
-                transaction: `${transactionType === 'add' ? '+ ' : '- '}${transaction}$`,
-                name,
+                amount: `${amount}$`,
+                goal,
             };
     
             try {
-                const storedTransactions = await AsyncStorage.getItem('transactions');
-                const transactionsArray = storedTransactions ? JSON.parse(storedTransactions) : [];
+                const storedGoal = await AsyncStorage.getItem('goal');
+                const goalArray = storedGoal ? JSON.parse(storedGoal) : [];
     
-                transactionsArray.push(transactionDetails);
+                goalArray.push(goalDetails);
     
-                await AsyncStorage.setItem('transactions', JSON.stringify(transactionsArray));
-
-                onSubmit(transactionDetails);
+                await AsyncStorage.setItem('goal', JSON.stringify(goalArray));
+    
                 onClose();
             } catch (error) {
-                Alert.alert('Storage Error', 'There was an error saving the transaction.');
+                Alert.alert('Storage Error', 'There was an error saving the goal: ' + error.message);
             }
         } else {
             Alert.alert('Validation Error', 'Please correct the errors before submitting.');
         }
     };
+    
 
     return (
         <Modal
@@ -146,42 +123,42 @@ const TransactionsModal = ({ visible, onClose, transactionType, onSubmit }) => {
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
 
-                    <View style={styles.transactionContainer}>
+                    <View style={styles.goalContainer}>
                     <TextInput
-                        style={[styles.transactionInput, handleTransactionType()]}
-                        value={getTransactionWithSign()}
-                        onChangeText={handleTransactionChange}
+                        style={[styles.amountInput, amount === '00.000' && {color: '#8e8e8e'}]}
+                        value={`${amount}$`}
+                        onChangeText={handleAmountChange}
                         keyboardType="numeric"
                     />
-                        <View style={styles.transactionBtnContainer}>
+                        <View style={styles.goalBtnContainer}>
                             <TouchableOpacity 
-                                style={[styles.transactionPlusIcon]}
-                                onPress={incrementTransaction}
+                                style={[styles.goalPlusIcon]}
+                                onPress={incrementAmount}
                                 >
                                 <Icons type={'plus'}/>
                             </TouchableOpacity>
                             <TouchableOpacity 
-                                style={[styles.transactionMinusIcon, isMinusDisabled() && { opacity: 0.5 }]}
-                                onPress={decrementTransaction}
+                                style={[styles.goalMinusIcon, isMinusDisabled() && { opacity: 0.5 }]}
+                                onPress={decrementAmount}
                                 disabled={isMinusDisabled()}
                                 >
                                 <Icons type={'minus'}/>
                             </TouchableOpacity>
                         </View>
                     </View>
-                    {errors.transaction ? <Text style={styles.error}>{errors.transaction}</Text> : null}
+                    {errors.goal ? <Text style={styles.error}>{errors.goal}</Text> : null}
 
                     <TextInput
-                        style={[styles.nameInput, name ? {fontWeight: '500'} : {fontWeight: '300'}]}
-                        value={name}
-                        onChangeText={setName}
-                        placeholder="Type the title, for example 'Salary'"
+                        style={[styles.goalInput, goal ? {fontWeight: '500'} : {fontWeight: '300'}]}
+                        value={goal}
+                        onChangeText={setGoal}
+                        placeholder="Type your goal, ex. “To buy a car”"
                         placeholderTextColor={'#8e8e8e'}
                     />
-                    {errors.name ? <Text style={styles.error}>{errors.name}</Text> : null}
+                    {errors.goal ? <Text style={styles.error}>{errors.goal}</Text> : null}
 
                     <TouchableOpacity style={styles.dateContainer} onPress={() => setShowCalendar(!showCalendar)}>
-                        <Text style={styles.calendarText}>{date.toLocaleDateString()}</Text>
+                        <Text style={styles.calendarDate}><Text style={styles.calendarText}>Ends: </Text> {date.toLocaleDateString()}</Text>
                         <View style={styles.calendarIcon}>
                             <Icons type={'calendar'}/>
                         </View>
@@ -206,7 +183,7 @@ const TransactionsModal = ({ visible, onClose, transactionType, onSubmit }) => {
                     )}
 
                     <TouchableOpacity style={styles.confirmBtn} onPress={handleSubmit}>
-                        <Text style={styles.confirmBtnText}>Confirm</Text>
+                        <Text style={styles.confirmBtnText}>Set goal</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.cancelBtn} onPress={onClose}>
@@ -236,7 +213,7 @@ const styles = StyleSheet.create({
         shadowRadius: 15,
         elevation: 5,
     },
-    transactionContainer: {
+    goalContainer: {
         width: '100%',
         height: 48,
         paddingVertical: 13,
@@ -245,30 +222,30 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         marginBottom: 11
     },
-    transactionInput: {
+    amountInput: {
         width: '100%',
         height: '100%',
-        color: '#8e8e8e',
+        color: '#000',
         fontSize: 18,
         fontWeight: '600'
     },
-    transactionBtnContainer: {
+    goalBtnContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         position: 'absolute',
         top: 13,
         right: 11
     },
-    transactionPlusIcon: {
+    goalPlusIcon: {
         width: 15,
         height: 15,
         marginRight: 10
     },
-    transactionMinusIcon: {
+    goalMinusIcon: {
         width: 25,
         height: 25,
     },
-    nameInput: {
+    goalInput: {
         width: '100%',
         borderRadius: 12,
         marginBottom: 11,
@@ -286,6 +263,11 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start'
     },
     calendarText: {
+        fontSize: 14,
+        fontWeight: '300',
+        color: '#000',
+    },
+    calendarDate: {
         fontSize: 14,
         fontWeight: '300',
         color: '#d9d9d9',
@@ -323,4 +305,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default TransactionsModal;
+export default GoalModal;
