@@ -41,7 +41,7 @@ const Transactions = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.titleText}>My profile</Text>
-            <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
+            <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginBottom: 26}}>
                 <View style={styles.imgContainer}>
                     <Image style={styles.Image} source={require('../assets/decor/image.png')}/>
                 </View>
@@ -165,37 +165,17 @@ const styles = StyleSheet.create({
         color: '#fff',
         zIndex: 2
     },
-    earnedContainer: {
-        width: '100%',
-        padding: 15,
-        backgroundColor: '#14b910',
-        borderRadius: 16,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    wastedContainer: {
-        width: '100%',
-        padding: 15,
-        backgroundColor: '#f66233',
-        borderRadius: 16,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    statText: {
-        fontSize: 32,
-        fontWeight: '600',
-        color: '#fff',
-    },
     titleText: {
         fontSize: 17,
         fontWeight: '700',
         color: '#000',
-        marginBottom: height * 0.016
+        marginBottom: height * 0.016,
+        alignSelf: 'flex-start'
     },
     transactionsContainer: {
         width: '100%',
         alignItems: 'flex-start',
-        height: height * 0.55,
+        height: height * 0.42,
         paddingBottom: 20
     },
     transBox: {
