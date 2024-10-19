@@ -45,7 +45,7 @@ const Transactions = () => {
                 <View style={styles.imgContainer}>
                     <Image style={styles.Image} source={require('../assets/decor/image.png')}/>
                 </View>
-                <Text style={styles.titleText}>The king of your money</Text>
+                <Text style={[styles.titleText, {width: 112, alignSelf: 'center'}]}>The king of your money</Text>
             </View>
             <View style={styles.balanceContainer}>
                 <Text style={styles.titleText}>Total balance:</Text>
