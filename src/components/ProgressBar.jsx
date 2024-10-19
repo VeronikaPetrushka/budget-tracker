@@ -2,23 +2,31 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Circle, Text as SvgText } from 'react-native-svg';
 
-const ProgressBar = ({ forGoal, goalAmount }) => {
+const ProgressBar = ({ forGoal, goalAmount, waste, limitAmount }) => {
     const radius = 48;
     const strokeWidth = 8;
     const circumference = 2 * Math.PI * radius;
 
-    console.log(parseFloat(goalAmount))
-
-    console.log(parseFloat(forGoal))
+    console.log('goalAmount: ', parseFloat(goalAmount))
+    console.log('forGoal: ', parseFloat(forGoal))
 
     const parsedForGoal = parseFloat(forGoal);
     const parsedGoal = parseFloat(goalAmount);
     
-    const percentage = parsedGoal > 0 ? (parsedForGoal / parsedGoal) * 100 : 0;
+    const percentageGoal = parsedGoal > 0 ? (parsedForGoal / parsedGoal) * 100 : 0;
 
-    console.log(percentage)
+    console.log('limitAmount: ', parseFloat(limitAmount));
+    console.log('waste: ', waste)
 
-    const offset = circumference - (percentage / 100) * circumference;
+    const parsedLimit = parseFloat(limitAmount);
+
+    const percentageLimit = parsedLimit > 0 ? (waste / parsedLimit) * 100 : 0;
+
+    console.log(percentageGoal)
+    console.log(percentageLimit)
+
+    const offset = circumference - (percentageGoal / 100) * circumference;
+    const offsetLimit = circumference - (percentageLimit / 100) * circumference;
 
     return (
         <View style={styles.container}>
@@ -39,7 +47,7 @@ const ProgressBar = ({ forGoal, goalAmount }) => {
                     r={radius}
                     strokeWidth={strokeWidth}
                     strokeDasharray={circumference}
-                    strokeDashoffset={offset}
+                    strokeDashoffset={offset || offsetLimit}
                     strokeLinecap="round"
                     transform={`rotate(-90 ${radius + strokeWidth / 2} ${radius + strokeWidth / 2})`}
                 />
@@ -52,7 +60,7 @@ const ProgressBar = ({ forGoal, goalAmount }) => {
                     textAnchor="middle"
                     alignmentBaseline="middle"
                 >
-                    {`${percentage.toFixed(2)}%`}
+                    {`${(percentageGoal || percentageLimit).toFixed(2)}%`}
                 </SvgText>
             </Svg>
         </View>

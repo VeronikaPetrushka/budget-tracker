@@ -1,10 +1,10 @@
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 
-const Icons = ({ type }) => {
+const Icons = ({ type, active }) => {
 
   let imageSource;
-  let iconStyle = styles.icon;
+  let iconStyle = [styles.icon];
 
   switch (type) {
     case 'add':
@@ -22,10 +22,23 @@ const Icons = ({ type }) => {
     case 'calendar':
         imageSource = require('../assets/common/calendar.png');
         break;
-    // case 'close':
-    //   imageSource = require('../assets/common/close.png');
-    //   iconStyle = styles.closeIcon;
-    //   break;
+
+    case 'statistics':
+        imageSource = require('../assets/panel/calendar.png');
+        active && iconStyle.push(styles.active);
+        break;
+    case 'budget':
+        imageSource = require('../assets/panel/budget.png');
+        active && iconStyle.push(styles.active);
+        break;
+    case 'profile':
+        imageSource = require('../assets/panel/profile.png');
+        active && iconStyle.push(styles.active);
+        break;
+    case 'transactions':
+        imageSource = require('../assets/panel/transactions.png');
+        active && iconStyle.push(styles.active);
+        break;
   }
 
   return (
@@ -42,11 +55,11 @@ const styles = StyleSheet.create({
     height: '100%',
     objectFit: 'cover'
   },
-  closeIcon: {
+  active: {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    tintColor: '#8b7e56',
+    tintColor: '#454545'
   }
 });
 

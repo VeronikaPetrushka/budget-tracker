@@ -1,15 +1,15 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import Budget from "../components/Budget";
+import Profile from "../components/Profile";
 import Panel from "../components/Panel";
 
-const BudgetScreen = () => {
+const ProfileScreen = () => {
     return (
         <View style={styles.container}>
-            <View style={styles.budgetContainer}>
-                <Budget />
+            <View style={styles.profile}>
+                <Profile />
             </View>
-            <View style={styles.panelContainer}>
+            <View style={styles.panel}>
                 <Panel />
             </View>
         </View>
@@ -20,13 +20,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    budgetContainer: {
+    profile: {
         flex: 1,
     },
-    panelContainer: {
+    panel: {
         position: 'absolute',
         bottom: 0,
     },
 });
 
-export default BudgetScreen;
+export default ProfileScreen;

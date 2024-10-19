@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, TextInput, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Calendar } from 'react-native-calendars';
 import Icons from './Icons';
 
-const GoalModal = ({ visible, onClose }) => {
+const LimitModal = ({ visible, onClose }) => {
     const [amount, setAmount] = useState('00.000');
-    const [goal, setGoal] = useState('');
-    const [date, setDate] = useState(new Date());
-    const [showCalendar, setShowCalendar] = useState(false);
     const [errors, setErrors] = useState({
         amount: '',
-        goal: '',
-        date: '',
     });
 
     useEffect(() => {
         if (visible) {
-            setDate(new Date());
             setAmount('00.000');
-            setGoal('');
-            setErrors({ amount: '', goal: '', date: ''});
+            setErrors({ amount: ''});
         }
     }, [visible]);
 
@@ -51,11 +43,6 @@ const GoalModal = ({ visible, onClose }) => {
         return false;
     };    
 
-    const handleDayPress = (day) => {
-        setDate(new Date(day.dateString));
-        setShowCalendar(false);
-    };
-
     const validateForm = () => {
         let valid = true;
         const newErrors = {};
@@ -65,47 +52,27 @@ const GoalModal = ({ visible, onClose }) => {
             valid = false;
         }
 
-        if (!goal) {
-            newErrors.goal = 'Goal is required';
-            valid = false;
-        }
-
-        if (!date) {
-            newErrors.date = 'Date is required';
-            valid = false;
-        }
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        if (date <= today) {
-            newErrors.date = 'Please select a future date.';
-            valid = false;
-        }
-
         setErrors(newErrors);
         return valid;
     };
 
     const handleSubmit = async () => {
         if (validateForm()) {
-            const goalDetails = {
-                date: date.toLocaleDateString(),
+            const limitAmount = {
                 amount: `${amount}$`,
-                goal,
             };
     
             try {
-                const storedGoal = await AsyncStorage.getItem('goal');
-                const goalArray = storedGoal ? JSON.parse(storedGoal) : [];
+                const storedLimit = await AsyncStorage.getItem('limit');
+                const limitArray = storedLimit ? JSON.parse(storedLimit) : [];
     
-                goalArray.push(goalDetails);
+                limitArray.push(limitAmount);
     
-                await AsyncStorage.setItem('goal', JSON.stringify(goalArray));
+                await AsyncStorage.setItem('limit', JSON.stringify(limitArray));
     
                 onClose();
             } catch (error) {
-                Alert.alert('Storage Error', 'There was an error saving the goal: ' + error.message);
+                Alert.alert('Storage Error', 'There was an error saving the limit: ' + error.message);
             }
         } else {
             Alert.alert('Validation Error', 'Please correct the errors before submitting.');
@@ -146,44 +113,12 @@ const GoalModal = ({ visible, onClose }) => {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    {errors.amount ? <Text style={styles.error}>{errors.amount}</Text> : null}
-
-                    <TextInput
-                        style={[styles.goalInput, goal ? {fontWeight: '500'} : {fontWeight: '300'}]}
-                        value={goal}
-                        onChangeText={setGoal}
-                        placeholder="Type your goal, ex. “To buy a car”"
-                        placeholderTextColor={'#8e8e8e'}
-                    />
                     {errors.goal ? <Text style={styles.error}>{errors.goal}</Text> : null}
 
-                    <TouchableOpacity style={styles.dateContainer} onPress={() => setShowCalendar(!showCalendar)}>
-                        <Text style={styles.calendarDate}><Text style={styles.calendarText}>Ends: </Text> {date.toLocaleDateString()}</Text>
-                        <View style={styles.calendarIcon}>
-                            <Icons type={'calendar'}/>
-                        </View>
-                    </TouchableOpacity>
-                    {errors.date ? <Text style={styles.error}>{errors.date}</Text> : null}
-
-                    {showCalendar && (
-                        <Calendar
-                            onDayPress={handleDayPress}
-                            markedDates={{
-                                [date.toISOString().split('T')[0]]: { selected: true, selectedColor: '#f9a500' }
-                            }}
-                            theme={{
-                                selectedDayBackgroundColor: '#f9a500',
-                                todayTextColor: '#f9a500',
-                                arrowColor: '#f9a500',
-                                textDayFontWeight: '500',
-                                textMonthFontWeight: 'bold',
-                                textDayHeaderFontWeight: '500'
-                            }}
-                        />
-                    )}
+                    <Text style={styles.text}>Set your monthly limit</Text>
 
                     <TouchableOpacity style={styles.confirmBtn} onPress={handleSubmit}>
-                        <Text style={styles.confirmBtnText}>Set goal</Text>
+                        <Text style={styles.confirmBtnText}>Set limit</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.cancelBtn} onPress={onClose}>
@@ -206,7 +141,7 @@ const styles = StyleSheet.create({
         padding: 18,
         backgroundColor: 'white',
         borderRadius: 23,
-        alignItems: 'center',
+        alignItems: 'flex-start',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
@@ -225,7 +160,7 @@ const styles = StyleSheet.create({
     amountInput: {
         width: '100%',
         height: '100%',
-        color: '#000',
+        color: '#ffa800',
         fontSize: 18,
         fontWeight: '600'
     },
@@ -255,27 +190,11 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: 12,
     },
-    dateContainer: {
-        flexDirection: 'row',
-        marginBottom: 11,
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'flex-start'
-    },
-    calendarText: {
-        fontSize: 14,
+    text: {
+        fontSize: 12,
         fontWeight: '300',
         color: '#000',
-    },
-    calendarDate: {
-        fontSize: 14,
-        fontWeight: '300',
-        color: '#d9d9d9',
-        marginRight: 10
-    },
-    calendarIcon: {
-        width: 20,
-        height: 20
+        marginBottom: 13
     },
     confirmBtn: {
         width: '100%',
@@ -291,6 +210,11 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#fff'
     },
+    cancelBtn: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     cancelBtnText: {
         fontSize: 14,
         fontWeight: '300',
@@ -305,4 +229,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default GoalModal;
+export default LimitModal;

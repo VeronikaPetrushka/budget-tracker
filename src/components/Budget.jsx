@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import TransactionsModal from "./TransactionsModal";
 import GoalModal from "./GoalModal";
 import TopUpGoalModal from "./TopUpGoalModal";
+import LimitModal from "./LimitModal";
 import ProgressBar from "./ProgressBar";
 import Icons from "./Icons"
 
@@ -16,10 +17,12 @@ const Budget = () => {
     const [goalTopUpModalVisible, setGoalTopUpModalVisible] = useState(false);
     const [limitModalVisible, setLimitModalVisible] = useState(false);
     const [forGoal, setForGoal] = useState(0);
+    const [waste, setWaste] = useState(0);
 
     const [budget, setBudget] = useState(0);
     const [transactions, setTransactions] = useState([]);
     const [goals, setGoals] = useState([]);
+    const [limit, setLimit] = useState([]);
 
     const loadBudgetAndTransactions = async () => {
         try {
@@ -52,9 +55,21 @@ const Budget = () => {
         }
     };
 
+    const loadLimit = async () => {
+        try {
+            const storedLimit = await AsyncStorage.getItem('limit');
+            if (storedLimit) {
+                setLimit(JSON.parse(storedLimit));
+            }
+        } catch (error) {
+            Alert.alert('Storage Error', 'There was an error retrieving limits.');
+        }
+    };
+
     useEffect(() => {
         loadBudgetAndTransactions();
         loadGoals();
+        loadLimit();
     }, []);
 
     const updateBudget = async (amount) => {
@@ -81,12 +96,16 @@ const Budget = () => {
     const handleTopUpGoal = async (amount) => {
         const newBudget = budget - amount;
         const newForGoal = forGoal + amount;
+        const newWaste = waste + amount;
+
         setBudget(newBudget);
-        setForGoal(newForGoal)
+        setForGoal(newForGoal);
+        setWaste(newWaste);
 
         try {
             await AsyncStorage.setItem('budget', newBudget.toString());
             await AsyncStorage.setItem('forGoal', newForGoal.toString());
+            await AsyncStorage.setItem('waste', newWaste.toString());
         } catch (error) {
             Alert.alert('Storage Error', 'There was an error updating the numbers.');
         }
@@ -121,9 +140,27 @@ const Budget = () => {
     //     loadGoals();
     // }
 
-    // const handleLimitModalVisible = () => {
-    //     setLimitModalVisible(!limitModalVisible);
-    // };
+    const handleLimitModalVisible = () => {
+        setLimitModalVisible(!limitModalVisible);
+        if (!limitModalVisible) {
+            loadLimit();
+        }
+    };
+
+    const sumUsedTransactions = (transactions) => {
+        return transactions.reduce((total, item) => {
+            if (item.transactionType === 'waste') {
+                const amount = parseFloat(item.transaction.replace('$', '').replace('+ ', '').replace('- ', ''));
+                return total + amount;
+            }
+            return total;
+        }, 0);
+    };
+    
+    useEffect(() => {
+        const usedSum = sumUsedTransactions(transactions);
+        setWaste(usedSum);
+    }, [transactions]);
 
     const formatDate = (date) => {
         const day = String(date.getDate()).padStart(2, '0');
@@ -160,7 +197,7 @@ const Budget = () => {
                     <Image source={require('../assets/decor/crown-big.png')} style={styles.crownBig}/>
                 </View>
             </View>
-
+            <ScrollView>
             <View style={styles.itemsContainer}>
                 <Text style={styles.titleText}>Goals:</Text>
                 {/* <Button title='reset' onPress={handleReset}/>
@@ -202,12 +239,33 @@ const Budget = () => {
 
             <View style={styles.itemsContainer}>
                 <Text style={styles.titleText}>Monthly limits:</Text>
-                <TouchableOpacity style={styles.limitsBtn}>
+                {limit.length === 0 ? (
+                <TouchableOpacity style={styles.limitsBtn} onPress={() => handleLimitModalVisible()}>
                     <View style={styles.icon}>
                         <Icons type={'add'}/>
                     </View>
                     <Text style={styles.btnText}>Set monthly limit</Text>
                 </TouchableOpacity>
+                ) : (
+                    limit.map((limit, index) => (
+                        <View key={index} style={styles.limitBox}>
+                            <View style={styles.limitTextContainer}>
+                                <View style={{marginBottom: 10}}>
+                                    <Text style={styles.limitSubtitle}>Used this month:</Text>
+                                    <Text style={styles.wastedAmount}>{waste}$</Text>
+                                </View>
+                                <View>
+                                    <Text style={styles.limitSubtitle}>Monthly limit:</Text>
+                                    <Text style={styles.limitAmount}>{limit.amount}</Text>
+                                </View>
+                            </View>
+                            <View style={{height: '100%', paddingTop: 6}}>
+                            <Image source={require('../assets/decor/violet-crown.png')} style={styles.progressLimitImg}/>
+                            <ProgressBar waste={waste} limitAmount={limit.amount} />
+                            </View>
+                        </View>
+                    ))
+                )}
             </View>
 
             <View style={styles.transactionsContainer}>
@@ -232,6 +290,7 @@ const Budget = () => {
                     </ScrollView>
                 )}
             </View>
+            </ScrollView>
 
             <TransactionsModal 
                 visible={transactionModalVisible} 
@@ -251,6 +310,11 @@ const Budget = () => {
                 onAdd={(amount) => handleTopUpGoal(amount)}
                 budget={budget}
                 />
+
+            <LimitModal 
+                visible={limitModalVisible} 
+                onClose={handleLimitModalVisible}
+                />
         </View>
     )
 };
@@ -262,6 +326,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         padding: 23,
+        paddingBottom: 74,
         paddingTop: height * 0.07,
         backgroundColor: '#fff'
     },
@@ -430,6 +495,14 @@ const styles = StyleSheet.create({
         top: -8,
         zIndex: 2
     },
+    progressLimitImg: {
+        position: 'absolute',
+        width: 50,
+        height: 46,
+        right: 20,
+        top: -25,
+        zIndex: 2
+    },
     limitsBtn: {
         width: '100%',
         height: height * 0.095,
@@ -439,6 +512,36 @@ const styles = StyleSheet.create({
         padding: 26,
         borderRadius: 16,
         flexDirection: 'row'
+    },
+    limitBox: {
+        width: '100%',
+        height: height * 0.18,
+        borderWidth: 0.5,
+        borderColor: '#ddd',
+        borderRadius: 16,
+        backgroundColor: '#fafafa',
+        padding: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    limitTextContainer: {
+        height: '100%'
+    },
+    wastedAmount: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#ffa800'
+    },
+    limitAmount: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#000'
+    },
+    limitSubtitle: {
+        fontSize: 12,
+        fontWeight: '300',
+        color: '#000'
     },
     btnText: {
         color: '#fff',
