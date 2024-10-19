@@ -40,6 +40,13 @@ const Transactions = () => {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.titleText}>My profile</Text>
+            <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
+                <View style={styles.imgContainer}>
+                    <Image style={styles.Image} source={require('../assets/decor/image.png')}/>
+                </View>
+                <Text style={styles.titleText}>The king of your money</Text>
+            </View>
             <View style={styles.balanceContainer}>
                 <Text style={styles.titleText}>Total balance:</Text>
                 <View style={styles.balanceBox}>
@@ -87,6 +94,20 @@ const styles = StyleSheet.create({
         paddingBottom: 74,
         paddingTop: height * 0.07,
         backgroundColor: '#fff'
+    },
+    imgContainer: {
+        width: height * 0.13,
+        height: height * 0.13,
+        borderRadius: 100,
+        overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 23
+    },
+    Image: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover'
     },
     balanceContainer: {
         width: '100%',
