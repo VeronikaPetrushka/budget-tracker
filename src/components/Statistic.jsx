@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, Dimensions, Alert } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Calendar } from 'react-native-calendars';
+import { useReset } from "../constants/reset";
 
 const { height, width } = Dimensions.get('window');
 
@@ -9,6 +10,7 @@ const Statistic = () => {
     const [transactions, setTransactions] = useState([]);
     const [date, setDate] = useState(new Date());
     const [filteredTransactions, setFilteredTransactions] = useState([]);
+    const { resetKey } = useReset();
 
     const loadTransactions = async () => {
         try {
@@ -26,14 +28,14 @@ const Statistic = () => {
     };
 
     const filterTransactionsByDate = (transactions, selectedDate) => {
-        const formattedDate = selectedDate.toLocaleDateString('en-GB');
+        const formattedDate = selectedDate.toLocaleDateString('en-GB').replace(/\//g, '.');
         const filtered = transactions.filter(transaction => transaction.date === formattedDate);
         setFilteredTransactions(filtered);
     };
 
     useEffect(() => {
         loadTransactions();
-    }, []);
+    }, [resetKey]);
 
     useEffect(() => {
         console.log('Stored Transactions:', transactions);

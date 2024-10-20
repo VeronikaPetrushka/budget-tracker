@@ -1,36 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ScrollView, Dimensions } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useReset } from "../constants/reset";
 
 const { height } = Dimensions.get('window');
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
     const [income, setIncome] = useState(0);
-    const [waste, setWaste] = useState(0);
+    const [spending, setSpending] = useState(0);
+    const [forGoal, setForGoal] = useState(0);
+    const { resetKey } = useReset();
 
     const loadTransactions = async () => {
         try {
             const storedTransactions = await AsyncStorage.getItem('transactions');
-            const storedWaste = await AsyncStorage.getItem('waste');
+            const storedForGoal = await AsyncStorage.getItem('forGoal');
 
             if (storedTransactions) {
                 setTransactions(JSON.parse(storedTransactions));
             }
-            if (storedWaste) {
-                setWaste(JSON.parse(storedWaste));
-            }
 
+            if (storedForGoal) {
+                setForGoal(parseFloat(storedForGoal));
+            }
+            
         } catch (error) {
             Alert.alert('Storage Error', 'There was an error retrieving data.');
         }
     };
 
+    console.log(forGoal)
+
     useEffect(() => {
         loadTransactions();
-    }, []);
+    }, [resetKey]);
 
-    const sumUsedTransactions = (transactions) => {
+    const sumIncomeTransactions = (transactions) => {
         return transactions.reduce((total, item) => {
             if (item.transactionType === 'add') {
                 const amount = parseFloat(item.transaction.replace('$', '').replace('+ ', '').replace('- ', ''));
@@ -39,11 +45,24 @@ const Transactions = () => {
             return total;
         }, 0);
     };
+
+    const sumUsedTransactions = (transactions, forGoal) => {
+        return transactions.reduce((total, item) => {
+            const amount = parseFloat(item.transaction.replace('$', '').replace('+ ', '').replace('- ', ''));
+            if (item.transactionType === 'waste') {
+                return total + amount;
+            }
+            return total;
+        }, 0) + forGoal;
+    };
     
     useEffect(() => {
-        const addedSum = sumUsedTransactions(transactions);
+        const addedSum = sumIncomeTransactions(transactions);
+        const addedSpending = sumUsedTransactions(transactions, forGoal);
         setIncome(addedSum);
-    }, [transactions]);
+        setSpending(addedSpending);
+    }, [transactions, forGoal]);
+    
 
     return (
         <View style={styles.container}>
@@ -56,7 +75,7 @@ const Transactions = () => {
             <View  style={{width: '100%', alignItems: 'flex-start', marginBottom: 27}}>
                 <Text style={styles.titleText}>Total used for all time</Text>
                 <View style={styles.wastedContainer}>
-                    <Text style={styles.statText}>{waste}$</Text>
+                    <Text style={styles.statText}>{spending}$</Text>
                 </View>
             </View>
             <View style={styles.transactionsContainer}>

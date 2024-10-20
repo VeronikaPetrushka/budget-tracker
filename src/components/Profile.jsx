@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Dimensions } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ResetMenu from "./ResetMenu";
+import Icons from "./Icons";
+import { useReset } from "../constants/reset";
 
 const { height } = Dimensions.get('window');
 
-const Transactions = () => {
+const Profile = () => {
     const [transactions, setTransactions] = useState([]);
     const [budget, setBudget] = useState(0);
+    const [resetMenuVisible, setResetMenuVisible] = useState(false);
+    const { resetKey } = useReset();
 
     const loadBudgetAndTransactions = async () => {
         try {
@@ -27,7 +32,7 @@ const Transactions = () => {
 
     useEffect(() => {
         loadBudgetAndTransactions();
-    }, []);
+    }, [resetKey]);
 
     const formatDate = (date) => {
         const day = String(date.getDate()).padStart(2, '0');
@@ -37,8 +42,19 @@ const Transactions = () => {
         return `${day}.${month}.${year}`;
     };
 
+    const handleResetMenuVisible = async () => {
+        if(!resetMenuVisible) {
+            await loadBudgetAndTransactions();
+        }
+
+        setResetMenuVisible(!resetMenuVisible);
+    }
+
     return (
         <View style={styles.container}>
+            <TouchableOpacity style={styles.resetMenu} onPress={() => handleResetMenuVisible()}>
+                <Icons type={'menu'}/>
+            </TouchableOpacity>
             <Text style={styles.titleText}>My profile</Text>
             <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginBottom: 26}}>
                 <View style={styles.imgContainer}>
@@ -79,6 +95,11 @@ const Transactions = () => {
                     </ScrollView>
                 )}
             </View>
+
+            <ResetMenu 
+                visible={resetMenuVisible} 
+                onClose={handleResetMenuVisible}
+                />
         </View>
     )
 };
@@ -93,6 +114,13 @@ const styles = StyleSheet.create({
         paddingBottom: 74,
         paddingTop: height * 0.07,
         backgroundColor: '#fff'
+    },
+    resetMenu: {
+        position: 'absolute',
+        top: height * 0.07,
+        right: 23,
+        width: 30,
+        height: 30,
     },
     imgContainer: {
         width: height * 0.13,
@@ -217,4 +245,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default Transactions;
+export default Profile;

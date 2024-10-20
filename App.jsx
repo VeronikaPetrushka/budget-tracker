@@ -7,6 +7,7 @@ import BudgetScreen from './src/screens/BudgetScreen.jsx';
 import StatisticScreen from './src/screens/StatisticScreen.jsx';
 import ProfileScreen from './src/screens/ProfileScreen.jsx';
 import TransactionsScreen from './src/screens/TransactionsScreen.jsx';
+import { ResetProvider } from './src/constants/reset.js';
 
 enableScreens();
 
@@ -15,6 +16,7 @@ const Stack = createStackNavigator();
 const App = () => {
   
     return (
+        <ResetProvider>
         <NavigationContainer>
                     <Stack.Navigator initialRouteName="HomeScreen">
                         <Stack.Screen 
@@ -44,6 +46,7 @@ const App = () => {
                         />
                     </Stack.Navigator>
         </NavigationContainer>
+        </ResetProvider>
     );
 };
 

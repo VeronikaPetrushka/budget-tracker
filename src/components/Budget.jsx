@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView, Button, Dimensions } from "react-native"
+import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView, Dimensions } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TransactionsModal from "./TransactionsModal";
 import GoalModal from "./GoalModal";
@@ -7,6 +7,7 @@ import TopUpGoalModal from "./TopUpGoalModal";
 import LimitModal from "./LimitModal";
 import ProgressBar from "./ProgressBar";
 import Icons from "./Icons"
+import { useReset } from "../constants/reset";
 
 const { height, width } = Dimensions.get('window');
 
@@ -24,53 +25,35 @@ const Budget = () => {
     const [goals, setGoals] = useState([]);
     const [limit, setLimit] = useState([]);
 
-    const loadBudgetAndTransactions = async () => {
-        try {
-            const storedBudget = await AsyncStorage.getItem('budget');
-            const storedTransactions = await AsyncStorage.getItem('transactions');
-            const storedForGoal = await AsyncStorage.getItem('forGoal');
+    const { resetKey } = useReset();
 
-            if (storedBudget) {
-                setBudget(parseFloat(storedBudget));
-            }
-            if (storedTransactions) {
-                setTransactions(JSON.parse(storedTransactions));
-            }
-            if (storedForGoal) {
-                setForGoal(parseFloat(storedForGoal));
-            }
+    const loadData = async () => {
+        try {
+            const [storedBudget, storedTransactions, storedForGoal, storedGoals, storedLimit] = await Promise.all([
+                AsyncStorage.getItem('budget'),
+                AsyncStorage.getItem('transactions'),
+                AsyncStorage.getItem('forGoal'),
+                AsyncStorage.getItem('goal'),
+                AsyncStorage.getItem('limit'),
+            ]);
+
+            if (storedBudget) setBudget(parseFloat(storedBudget));
+            if (storedTransactions) setTransactions(JSON.parse(storedTransactions));
+            if (storedForGoal) setForGoal(parseFloat(storedForGoal));
+            if (storedGoals) setGoals(JSON.parse(storedGoals));
+            if (storedLimit) setLimit(JSON.parse(storedLimit));
         } catch (error) {
             Alert.alert('Storage Error', 'There was an error retrieving data.');
         }
     };
 
-    const loadGoals = async () => {
-        try {
-            const storedGoals = await AsyncStorage.getItem('goal');
-            if (storedGoals) {
-                setGoals(JSON.parse(storedGoals));
-            }
-        } catch (error) {
-            Alert.alert('Storage Error', 'There was an error retrieving goals.');
-        }
-    };
-
-    const loadLimit = async () => {
-        try {
-            const storedLimit = await AsyncStorage.getItem('limit');
-            if (storedLimit) {
-                setLimit(JSON.parse(storedLimit));
-            }
-        } catch (error) {
-            Alert.alert('Storage Error', 'There was an error retrieving limits.');
-        }
-    };
+    useEffect(() => {
+        loadData();
+    }, []);
 
     useEffect(() => {
-        loadBudgetAndTransactions();
-        loadGoals();
-        loadLimit();
-    }, []);
+        loadData();
+    }, [resetKey]);
 
     const updateBudget = async (amount) => {
         const newBudget = budget + amount;
@@ -115,14 +98,13 @@ const Budget = () => {
     const handleTransactionModalVisible = (type) => {
         setTransactionType(type);
         setTransactionModalVisible(!transactionModalVisible);
-        if (!transactionModalVisible) {
-            loadBudgetAndTransactions();
-        }
+        if (!transactionModalVisible)
+            loadData();;
     };
 
     const handleGoalModalVisible = async () => {
         if (goalModalVisible) {
-            await loadGoals();
+            await loadData();
         }
         setGoalModalVisible(!goalModalVisible);
     };
@@ -132,22 +114,9 @@ const Budget = () => {
         setGoalTopUpModalVisible(!goalTopUpModalVisible);
     }
 
-    // const handleReset = async () => {
-    //     await AsyncStorage.removeItem('transactions');
-    //     await AsyncStorage.removeItem('goal');
-    //     await AsyncStorage.removeItem('forGoal');
-    //     await AsyncStorage.removeItem('waste');
-    //     await AsyncStorage.removeItem('income');
-    //     await AsyncStorage.removeItem('limit');
-    //     await AsyncStorage.removeItem('budget');
-
-    //     loadBudgetAndTransactions();
-    //     loadGoals();
-    // }
-
     const handleLimitModalVisible = async () => {
         if (limitModalVisible) {
-            await loadLimit();
+            await loadData();
         }
         setLimitModalVisible(!limitModalVisible);
     };
@@ -207,8 +176,6 @@ const Budget = () => {
 
             <View style={styles.itemsContainer}>
                 <Text style={styles.titleText}>Goals:</Text>
-                {/* <Button title='reset' onPress={handleReset}/>
-                <ScrollView> */}
                 {goals.length === 0 ? (
                 <TouchableOpacity style={styles.goalsBtn} onPress={() => handleGoalModalVisible()}>
                     <View style={styles.icon}>
@@ -241,7 +208,6 @@ const Budget = () => {
                         </View>
                     ))
                 )}
-                {/* </ScrollView> */}
             </View>
 
             <View style={styles.itemsContainer}>

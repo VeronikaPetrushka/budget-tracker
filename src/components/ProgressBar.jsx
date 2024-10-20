@@ -14,8 +14,8 @@ const ProgressBar = ({ forGoal, goalAmount, waste, limitAmount, color, color2 })
     const percentageGoal = parsedGoal > 0 ? (parsedForGoal / parsedGoal) * 100 : 0;
     const percentageLimit = parsedLimit > 0 ? (waste / parsedLimit) * 100 : 0;
 
-    const offsetGoal = circumference - (percentageGoal / 100) * circumference;
-    const offsetLimit = circumference - (percentageLimit / 100) * circumference;
+    const offsetGoal = circumference - Math.min(percentageGoal, 100) / 100 * circumference;
+    const offsetLimit = circumference - Math.min(percentageLimit, 100) / 100 * circumference;
 
     const isGoalProgress = typeof forGoal !== 'undefined' && typeof goalAmount !== 'undefined';
 

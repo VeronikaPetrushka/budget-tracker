@@ -39,6 +39,10 @@ const Icons = ({ type, active }) => {
         imageSource = require('../assets/panel/transactions.png');
         active && iconStyle.push(styles.active);
         break;
+
+    case 'menu':
+        imageSource = require('../assets/panel/menu.png');
+        break;
   }
 
   return (
