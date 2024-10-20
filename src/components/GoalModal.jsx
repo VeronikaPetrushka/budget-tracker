@@ -90,7 +90,7 @@ const GoalModal = ({ visible, onClose }) => {
     const handleSubmit = async () => {
         if (validateForm()) {
             const goalDetails = {
-                date: date.toLocaleDateString(),
+                date: date.toLocaleDateString('en-GB').replace(/\//g, '.'),
                 amount: `${amount}$`,
                 goal,
             };

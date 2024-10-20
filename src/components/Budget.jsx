@@ -8,7 +8,7 @@ import LimitModal from "./LimitModal";
 import ProgressBar from "./ProgressBar";
 import Icons from "./Icons"
 
-const { height } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 const Budget = () => {
     const [transactionModalVisible, setTransactionModalVisible] = useState(false);
@@ -120,12 +120,13 @@ const Budget = () => {
         }
     };
 
-    const handleGoalModalVisible = () => {
-        setGoalModalVisible(!goalModalVisible);
-        if (!goalModalVisible) {
-            loadGoals();
+    const handleGoalModalVisible = async () => {
+        if (goalModalVisible) {
+            await loadGoals();
         }
+        setGoalModalVisible(!goalModalVisible);
     };
+    
 
     const handleTopUpModalVisible = () => {
         setGoalTopUpModalVisible(!goalTopUpModalVisible);
@@ -134,18 +135,23 @@ const Budget = () => {
     // const handleReset = async () => {
     //     await AsyncStorage.removeItem('transactions');
     //     await AsyncStorage.removeItem('goal');
-        // await AsyncStorage.removeItem('forGoal');
+    //     await AsyncStorage.removeItem('forGoal');
+    //     await AsyncStorage.removeItem('waste');
+    //     await AsyncStorage.removeItem('income');
+    //     await AsyncStorage.removeItem('limit');
+    //     await AsyncStorage.removeItem('budget');
 
     //     loadBudgetAndTransactions();
     //     loadGoals();
     // }
 
-    const handleLimitModalVisible = () => {
-        setLimitModalVisible(!limitModalVisible);
-        if (!limitModalVisible) {
-            loadLimit();
+    const handleLimitModalVisible = async () => {
+        if (limitModalVisible) {
+            await loadLimit();
         }
+        setLimitModalVisible(!limitModalVisible);
     };
+    
 
     const sumUsedTransactions = (transactions) => {
         return transactions.reduce((total, item) => {
@@ -198,6 +204,7 @@ const Budget = () => {
                 </View>
             </View>
             <ScrollView>
+
             <View style={styles.itemsContainer}>
                 <Text style={styles.titleText}>Goals:</Text>
                 {/* <Button title='reset' onPress={handleReset}/>
@@ -229,7 +236,7 @@ const Budget = () => {
                             </View>
                             <View style={{height: '100%', paddingTop: 20}}>
                             <Image source={require('../assets/decor/violet-crown.png')} style={styles.progressImg}/>
-                            <ProgressBar forGoal={forGoal} goalAmount={goal.amount} />
+                            <ProgressBar forGoal={forGoal} goalAmount={goal.amount} color2={"#14b910"} />
                             </View>
                         </View>
                     ))
@@ -259,9 +266,9 @@ const Budget = () => {
                                     <Text style={styles.limitAmount}>{limit.amount}</Text>
                                 </View>
                             </View>
-                            <View style={{height: '100%', paddingTop: 6}}>
+                            <View style={{height: '100%', paddingTop: 18}}>
                             <Image source={require('../assets/decor/violet-crown.png')} style={styles.progressLimitImg}/>
-                            <ProgressBar waste={waste} limitAmount={limit.amount} />
+                            <ProgressBar waste={waste} limitAmount={limit.amount} color={'#ffa800'} />
                             </View>
                         </View>
                     ))
@@ -422,7 +429,7 @@ const styles = StyleSheet.create({
         color: '#fff'
     },
     itemsContainer: {
-        width: '100%',
+        width: width * 0.87,
         alignItems: 'flex-start',
         marginBottom: height * 0.021
     },
@@ -491,16 +498,16 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: 50,
         height: 46,
-        right: 20,
-        top: -8,
+        right: 12,
+        top: -15,
         zIndex: 2
     },
     progressLimitImg: {
         position: 'absolute',
         width: 50,
         height: 46,
-        right: 20,
-        top: -25,
+        right: 12,
+        top: -22.5,
         zIndex: 2
     },
     limitsBtn: {

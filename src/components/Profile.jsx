@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Dimensions } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Icons from "./Icons";
 
 const { height } = Dimensions.get('window');
 

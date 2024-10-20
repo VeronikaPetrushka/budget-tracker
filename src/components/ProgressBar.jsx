@@ -1,32 +1,23 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import Svg, { Circle, Text as SvgText } from 'react-native-svg';
 
-const ProgressBar = ({ forGoal, goalAmount, waste, limitAmount }) => {
+const ProgressBar = ({ forGoal, goalAmount, waste, limitAmount, color, color2 }) => {
     const radius = 48;
     const strokeWidth = 8;
     const circumference = 2 * Math.PI * radius;
 
-    console.log('goalAmount: ', parseFloat(goalAmount))
-    console.log('forGoal: ', parseFloat(forGoal))
-
     const parsedForGoal = parseFloat(forGoal);
     const parsedGoal = parseFloat(goalAmount);
-    
-    const percentageGoal = parsedGoal > 0 ? (parsedForGoal / parsedGoal) * 100 : 0;
-
-    console.log('limitAmount: ', parseFloat(limitAmount));
-    console.log('waste: ', waste)
-
     const parsedLimit = parseFloat(limitAmount);
 
+    const percentageGoal = parsedGoal > 0 ? (parsedForGoal / parsedGoal) * 100 : 0;
     const percentageLimit = parsedLimit > 0 ? (waste / parsedLimit) * 100 : 0;
 
-    console.log(percentageGoal)
-    console.log(percentageLimit)
-
-    const offset = circumference - (percentageGoal / 100) * circumference;
+    const offsetGoal = circumference - (percentageGoal / 100) * circumference;
     const offsetLimit = circumference - (percentageLimit / 100) * circumference;
+
+    const isGoalProgress = typeof forGoal !== 'undefined' && typeof goalAmount !== 'undefined';
 
     return (
         <View style={styles.container}>
@@ -40,14 +31,14 @@ const ProgressBar = ({ forGoal, goalAmount, waste, limitAmount }) => {
                     strokeWidth={strokeWidth}
                 />
                 <Circle
-                    stroke="#14b910"
+                    stroke={isGoalProgress ? color2 : color}
                     fill="none"
                     cx={radius + strokeWidth / 2}
                     cy={radius + strokeWidth / 2}
                     r={radius}
                     strokeWidth={strokeWidth}
                     strokeDasharray={circumference}
-                    strokeDashoffset={offset || offsetLimit}
+                    strokeDashoffset={isGoalProgress ? offsetGoal : offsetLimit}
                     strokeLinecap="round"
                     transform={`rotate(-90 ${radius + strokeWidth / 2} ${radius + strokeWidth / 2})`}
                 />
@@ -60,7 +51,7 @@ const ProgressBar = ({ forGoal, goalAmount, waste, limitAmount }) => {
                     textAnchor="middle"
                     alignmentBaseline="middle"
                 >
-                    {`${(percentageGoal || percentageLimit).toFixed(2)}%`}
+                    {`${isGoalProgress ? percentageGoal.toFixed(2) : percentageLimit.toFixed(2)}%`}
                 </SvgText>
             </Svg>
         </View>
@@ -69,9 +60,8 @@ const ProgressBar = ({ forGoal, goalAmount, waste, limitAmount }) => {
 
 const styles = StyleSheet.create({
     container: {
-        justifyContent: 'center',
         alignItems: 'center',
-        margin: 10,
+        justifyContent: 'center',
     },
 });
 

@@ -113,7 +113,7 @@ const TransactionsModal = ({ visible, onClose, transactionType, onSubmit }) => {
         if (validateForm()) {
             const transactionDetails = {
                 transactionType,
-                date: date.toLocaleDateString(),
+                date: date.toLocaleDateString('en-GB').replace(/\//g, '.'),
                 transaction: `${transactionType === 'add' ? '+ ' : '- '}${transaction}$`,
                 name,
             };
