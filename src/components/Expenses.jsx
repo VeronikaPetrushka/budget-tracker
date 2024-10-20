@@ -1,11 +1,10 @@
 import React from "react"
-import { View, Text,TouchableOpacity, StyleSheet, Dimensions } from "react-native"
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, Dimensions, Image } from "react-native"
+import ProgressBarDecor from "./ProgressBarDecor";
 
 const { height, width } = Dimensions.get('window');
 
 const Expenses = () => {
-    const navigation = useNavigation();
 
     return (
         <View style={styles.container}>
@@ -25,7 +24,8 @@ const Expenses = () => {
                     </View>
 
                     <View style={styles.budgetBarContainer}>
-                        <View style={styles.progressBarPlaceholder}></View>
+                        <Image source={require('../assets/decor/crown-gold.png')} style={styles.progressImg}/>
+                        <ProgressBarDecor waste={'2524.13'} limitAmount={'3000'} color={"#ffa800"}/>
                     </View>
                 </View>
             </View>
@@ -66,12 +66,12 @@ const styles = StyleSheet.create({
         marginBottom: height * 0.085
     },
     budgetTextContainer: {
-        width: '49%',
         alignItems: 'flex-start'
     },
     budgetBarContainer: {
-        width: '49%',
-        alignItems: 'flex-end'
+        alignItems: 'flex-end',
+        height: '100%',
+        paddingTop: 5,
     },
     budgetItem: {
         marginBottom: height * 0.01,
@@ -93,12 +93,13 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#000'
     },
-    progressBarPlaceholder: {
-        borderRadius: 100,
-        borderColor: '#FFA800',
-        borderWidth: 3,
-        width: height * 0.11,
-        height: height * 0.11,
+    progressImg: {
+        position: 'absolute',
+        width: 85,
+        height: 85,
+        right: -5,
+        top: -60,
+        zIndex: 2
     },
 })
 

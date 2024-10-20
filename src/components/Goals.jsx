@@ -1,12 +1,11 @@
 import React from "react"
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from "react-native"
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image } from "react-native"
+import ProgressBarDecor from "./ProgressBarDecor";
 import Icons from "./Icons";
 
 const { height, width } = Dimensions.get('window');
 
 const Goals = () => {
-    const navigation = useNavigation();
 
     return (
         <View style={styles.container}>
@@ -23,16 +22,17 @@ const Goals = () => {
                             <Text style={styles.dateEndsText}>Ends: </Text>
                             26.06.2024
                         </Text>
-                        <TouchableOpacity style={styles.addBtn}>
+                        <View style={styles.addBtn}>
                             <View style={styles.addIcon}>
                                 <Icons type={'add'}/>
                             </View>
                             <Text style={styles.addText}>Add</Text>
-                        </TouchableOpacity>
+                        </View>
                     </View>
 
                     <View style={styles.budgetBarContainer}>
-                        <View style={styles.progressBarPlaceholder}></View>
+                        <Image source={require('../assets/decor/crown-gold.png')} style={styles.progressImg}/>
+                        <ProgressBarDecor forGoal={'19421'} goalAmount={'24200'} color2={"#14b910"}/>
                     </View>
                 </View>
             </View>
@@ -76,7 +76,9 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start'
     },
     budgetBarContainer: {
-        alignItems: 'flex-end'
+        alignItems: 'flex-end',
+        height: '100%',
+        paddingTop: 5,
     },
     amountText: {
         fontSize: 18,
@@ -121,12 +123,13 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: '#fff'
     },
-    progressBarPlaceholder: {
-        borderRadius: 100,
-        borderColor: '#14B910',
-        borderWidth: 3,
-        width: height * 0.11,
-        height: height * 0.11,
+    progressImg: {
+        position: 'absolute',
+        width: 85,
+        height: 85,
+        right: -5,
+        top: -60,
+        zIndex: 2
     },
 })
 

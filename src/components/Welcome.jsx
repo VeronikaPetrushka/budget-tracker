@@ -8,7 +8,6 @@ const Welcome = () => {
     return (
         <View style={styles.imgContainer}>
                 <Image style={styles.image} source={require('../assets/decor/home.png')}/>
-                {/* Top Gradient */}
                 <LinearGradient
                     colors={['#FFFFFF', '#FFFFFF00']}
                     start={{ x: 0, y: 0 }}
@@ -16,7 +15,6 @@ const Welcome = () => {
                     style={[styles.gradient, { top: 0 }]}
                 />
                 
-                {/* Bottom Gradient */}
                 <LinearGradient
                     colors={['#FFFFFF00', '#FFFFFF']}
                     start={{ x: 0, y: 0 }}
