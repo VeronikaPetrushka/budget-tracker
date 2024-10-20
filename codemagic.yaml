@@ -8,10 +8,10 @@ workflows:
         environment:
           ios_signing:
             distribution_type: app_store
-            bundle_identifier: com.BudgetCrown2024
+            bundle_identifier: com.BudgetCrown.2024
           vars:
             APP_STORE_APPLE_ID: 6737171158
-            BUNDLE_ID: "com.BudgetCrown2024"
+            BUNDLE_ID: "com.BudgetCrown.2024"
             XCODE_WORKSPACE: "BudgetTracker.xcworkspace"
             XCODE_SCHEME: "BudgetTracker"
         scripts:
