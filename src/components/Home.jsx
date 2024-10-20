@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     },
     btn: {
         width: 194,
-        padding: 12,
+        padding: height * 0.012,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 5,

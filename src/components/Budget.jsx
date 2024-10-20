@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#9893FF',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 26,
+        padding: height * 0.026,
         borderRadius: 16,
         flexDirection: 'row'
     },
@@ -491,7 +491,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F8D694',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 26,
+        padding: height * 0.026,
         borderRadius: 16,
         flexDirection: 'row'
     },
@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
         borderColor: '#DDD',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: 21,
+        padding: height * 0.021,
         borderRadius: 16,
         flexDirection: 'row',
         marginBottom: 8
