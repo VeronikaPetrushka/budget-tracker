@@ -42,6 +42,7 @@ const Budget = () => {
             if (storedForGoal) setForGoal(parseFloat(storedForGoal));
             if (storedGoals) setGoals(JSON.parse(storedGoals));
             if (storedLimit) setLimit(JSON.parse(storedLimit));
+
         } catch (error) {
             Alert.alert('Storage Error', 'There was an error retrieving data.');
         }
@@ -53,6 +54,14 @@ const Budget = () => {
 
     useEffect(() => {
         loadData();
+        if(resetKey) {
+            setBudget(0);
+            setTransactions([]);
+            setForGoal(0);
+            setGoals([]);
+            setLimit([]);
+            setWaste(0);    
+        }
     }, [resetKey]);
 
     const updateBudget = async (amount) => {

@@ -32,6 +32,10 @@ const Profile = () => {
 
     useEffect(() => {
         loadBudgetAndTransactions();
+        if(resetKey) {
+            setBudget(0);
+            setTransactions([]);  
+        }
     }, [resetKey]);
 
     const formatDate = (date) => {

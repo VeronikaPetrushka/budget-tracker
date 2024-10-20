@@ -1,58 +1,77 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useReset } from '../constants/reset';
 
 const ResetMenu = ({ visible, onClose }) => {    
-    const { reset } = useReset();
-
+    const { reset, resetKey } = useReset();
+    const [budget, setBudget] = useState(0);
+    const [transactions, setTransactions] = useState([]);
+    const [goals, setGoals] = useState([]);
+    const [limit, setLimit] = useState([]);
+    const [forGoal, setForGoal] = useState(0);
+    const [waste, setWaste] = useState(0);
+    
     const handleResetAll = async () => {
-
         try {
+            await AsyncStorage.removeItem('budget');
             await AsyncStorage.removeItem('transactions');
             await AsyncStorage.removeItem('goal');
             await AsyncStorage.removeItem('forGoal');
+            await AsyncStorage.removeItem('limit');
             await AsyncStorage.removeItem('waste');
             await AsyncStorage.removeItem('income');
-            await AsyncStorage.removeItem('limit');
-            await AsyncStorage.removeItem('budget');
-
+    
+            setBudget(0);
+            setTransactions([]);
+            setForGoal(0);
+            setGoals([]);
+            setLimit([]);
+            setWaste(0);
+    
             reset();
             onClose();
-
-            Alert.alert('Everything has been reset successfully')
+    
+            Alert.alert('Everything has been reset successfully');
         } catch (error) {
             Alert.alert('Storage Error', 'There was an error resetting all.');
         }
-    }
-
+    };
+    
     const handleResetGoal = async () => {
         try {
-        await AsyncStorage.removeItem('goal');
-        await AsyncStorage.removeItem('forGoal');
-
-        reset();
-        onClose();
-
-        Alert.alert('Goal has been reset successfully')
+            await AsyncStorage.removeItem('goal');
+            await AsyncStorage.removeItem('forGoal');
+    
+            setForGoal(0);
+            setGoals([]);
+    
+            reset();
+            onClose();
+    
+            Alert.alert('Goal has been reset successfully');
         } catch (error) {
             Alert.alert('Storage Error', 'There was an error resetting goal.');
         }
-    }
-
+    };
+    
     const handleResetLimit = async () => {
         try {
-        await AsyncStorage.removeItem('waste');
-        await AsyncStorage.removeItem('limit');
-
-        reset();
-        onClose();
-
-        Alert.alert('Limit has been reset successfully')
+            await AsyncStorage.removeItem('waste');
+            await AsyncStorage.removeItem('limit');
+    
+            setWaste(0);
+            setLimit([]);
+    
+            reset();
+            onClose();
+    
+            Alert.alert('Limit has been reset successfully');
         } catch (error) {
             Alert.alert('Storage Error', 'There was an error resetting limit.');
         }
-    }
+    };
+    
 
     return (
         <Modal
