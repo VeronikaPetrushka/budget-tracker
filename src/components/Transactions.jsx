@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, ScrollView, Dimensions } from "react-native"
+import { StyleSheet, View, Text, ScrollView, Dimensions, ImageBackground } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useReset } from "../constants/reset";
 
@@ -65,6 +65,11 @@ const Transactions = () => {
     
 
     return (
+        <ImageBackground
+        source={require('../assets/back/bg.jpg')}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
         <View style={styles.container}>
             <View style={{width: '100%', alignItems: 'flex-start', marginBottom: 18}}>
                 <Text style={styles.titleText}>Total earned for all time</Text>
@@ -101,10 +106,16 @@ const Transactions = () => {
                 )}
             </View>
         </View>
+        </ImageBackground>
     )
 };
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+      },
     container: {
         width: '100%',
         height: '100%',
@@ -113,7 +124,6 @@ const styles = StyleSheet.create({
         padding: 23,
         paddingBottom: 74,
         paddingTop: height * 0.07,
-        backgroundColor: '#fff'
     },
     earnedContainer: {
         width: '100%',
@@ -139,7 +149,7 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 17,
         fontWeight: '700',
-        color: '#000',
+        color: '#fff',
         marginBottom: height * 0.016
     },
     transactionsContainer: {

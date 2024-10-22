@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Dimensions } from "react-native"
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Dimensions, ImageBackground } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ResetMenu from "./ResetMenu";
 import Icons from "./Icons";
@@ -55,19 +55,24 @@ const Profile = () => {
     }
 
     return (
+        <ImageBackground
+        source={require('../assets/back/bg.jpg')}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
         <View style={styles.container}>
             <TouchableOpacity style={styles.resetMenu} onPress={() => handleResetMenuVisible()}>
                 <Icons type={'menu'}/>
             </TouchableOpacity>
-            <Text style={styles.titleText}>My profile</Text>
+            <Text style={[styles.titleText, {color: '#fff'}]}>My profile</Text>
             <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginBottom: 26}}>
                 <View style={styles.imgContainer}>
                     <Image style={styles.Image} source={require('../assets/decor/image.png')}/>
                 </View>
-                <Text style={[styles.titleText, {width: 112, alignSelf: 'center'}]}>The king of your money</Text>
+                <Text style={[styles.titleText, {width: 112, alignSelf: 'center', color: '#fff'}]}>The king of your money</Text>
             </View>
             <View style={styles.balanceContainer}>
-                <Text style={styles.titleText}>Total balance:</Text>
+                <Text style={[styles.titleText, {color: '#fff'}]}>Total balance:</Text>
                 <View style={styles.balanceBox}>
                     <View style={styles.dateBox}>
                         <Text style={styles.dateText}>{formatDate(new Date())}</Text>
@@ -78,7 +83,7 @@ const Profile = () => {
                 </View>
             </View>
             <View style={styles.transactionsContainer}>
-                <Text style={styles.titleText}>List of transactions</Text>
+                <Text style={[styles.titleText, {color: '#fff'}]}>List of transactions</Text>
                 {transactions.length === 0 ? (
                     <View style={styles.transBox}>
                         <Text style={styles.noTransText}>Here will be your transactions</Text>
@@ -105,10 +110,16 @@ const Profile = () => {
                 onClose={handleResetMenuVisible}
                 />
         </View>
+        </ImageBackground>
     )
 };
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+      },
     container: {
         width: '100%',
         height: '100%',
@@ -117,7 +128,6 @@ const styles = StyleSheet.create({
         padding: 23,
         paddingBottom: 74,
         paddingTop: height * 0.07,
-        backgroundColor: '#fff'
     },
     resetMenu: {
         position: 'absolute',
@@ -148,8 +158,8 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 17,
         fontWeight: '700',
-        color: '#000',
-        marginBottom: height * 0.016
+        color: '#fff',
+        marginBottom: height * 0.016,
     },
     crownSmall: {
         width: height * 0.14,

@@ -11,14 +11,14 @@ const Crown = () => {
             <View style={styles.imgContainer}>
                 <Image style={styles.image} source={require('../assets/decor/crown.png')}/>
                 <LinearGradient
-                    colors={['#FFFFFF', '#FFFFFF00']}
+                    colors={['#c77a12', '#FFFFFF00']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 0, y: 1 }}
                     style={[styles.gradient, { top: 0 }]}
                 />
                 
                 <LinearGradient
-                    colors={['#FFFFFF00', '#FFFFFF']}
+                    colors={['#FFFFFF00', '#1d0d46']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 0, y: 1 }}
                     style={[styles.gradient, { bottom: 0 }]}
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     gradient: {
         position: 'absolute',
         width: '100%',
-        height: '15%',
+        height: '20%',
         zIndex: 1,
     }
 })

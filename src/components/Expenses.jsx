@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     budgetTitle: {
         fontSize: 17,
         fontWeight: '700',
-        color: '#000',
+        color: '#fff',
         marginBottom: height * 0.013
     },
     budgetBox: {

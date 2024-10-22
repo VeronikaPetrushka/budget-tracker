@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { View, Text,TouchableOpacity, StyleSheet, Dimensions } from "react-native"
+import { View, Text,TouchableOpacity, StyleSheet, Dimensions, ImageBackground } from "react-native"
 import { useNavigation } from "@react-navigation/native";
 import Welcome from "./Welcome";
 import Expenses from "./Expenses";
@@ -23,6 +23,12 @@ const Home = () => {
     };
 
     return (
+        <ImageBackground
+        source={require('../assets/back/bg.jpg')}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
+
         <View style={styles.container}>
             {components[componentIndex]}
             <View style={styles.infoContainer}>
@@ -71,17 +77,22 @@ const Home = () => {
 
             </View>
         </View>
+        </ImageBackground>
     )
 };
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+      },
     container: {
         width: '100%',
         height: '100%',
         justifyContent: 'flex-start',
         alignItems: 'center',
         paddingTop: height * 0.06,
-        backgroundColor: '#fff'
     },
     infoContainer: {
         width: '100%',
@@ -100,7 +111,7 @@ const styles = StyleSheet.create({
     text: {
         fontWeight: '400',
         fontSize: 15,
-        color: '#000',
+        color: '#fff',
         textAlign: 'center',
         marginBottom: height * 0.034
     },
@@ -132,7 +143,7 @@ const styles = StyleSheet.create({
         fontSize: 13,
         fontWeight: '300',
         textAlign: 'center',
-        color: '#767676'
+        color: '#e8e7e4'
     }
 })
 

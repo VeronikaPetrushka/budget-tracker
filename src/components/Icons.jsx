@@ -25,23 +25,28 @@ const Icons = ({ type, active }) => {
 
     case 'statistics':
         imageSource = require('../assets/panel/calendar.png');
+        iconStyle.push(styles.panel);
         active && iconStyle.push(styles.active);
         break;
     case 'budget':
         imageSource = require('../assets/panel/budget.png');
+        iconStyle.push(styles.panel);
         active && iconStyle.push(styles.active);
         break;
     case 'profile':
         imageSource = require('../assets/panel/profile.png');
+        iconStyle.push(styles.panel);
         active && iconStyle.push(styles.active);
         break;
     case 'transactions':
         imageSource = require('../assets/panel/transactions.png');
+        iconStyle.push(styles.panel);
         active && iconStyle.push(styles.active);
         break;
 
     case 'menu':
         imageSource = require('../assets/panel/menu.png');
+        iconStyle.push(styles.menu);
         break;
   }
 
@@ -59,11 +64,23 @@ const styles = StyleSheet.create({
     height: '100%',
     objectFit: 'cover'
   },
+  panel: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    tintColor: '#b4a7d6'
+  },
   active: {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    tintColor: '#454545'
+    tintColor: '#fff'
+  },
+  menu: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    tintColor: '#fff'
   }
 });
 

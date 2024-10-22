@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView, Dimensions } from "react-native"
+import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView, Dimensions, ImageBackground } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TransactionsModal from "./TransactionsModal";
 import GoalModal from "./GoalModal";
@@ -155,6 +155,11 @@ const Budget = () => {
     };
 
     return (
+        <ImageBackground
+        source={require('../assets/back/bg.jpg')}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
         <View style={styles.container}>
             <View style={styles.balanceContainer}>
                 <Text style={styles.titleText}>Total balance:</Text>
@@ -298,10 +303,16 @@ const Budget = () => {
                 onClose={handleLimitModalVisible}
                 />
         </View>
+        </ImageBackground>
     )
 };
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+      },
     container: {
         width: '100%',
         height: '100%',
@@ -310,7 +321,6 @@ const styles = StyleSheet.create({
         padding: 23,
         paddingBottom: 74,
         paddingTop: height * 0.07,
-        backgroundColor: '#fff'
     },
     balanceContainer: {
         width: '100%',
@@ -320,7 +330,7 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 17,
         fontWeight: '700',
-        color: '#000',
+        color: '#fff',
         marginBottom: height * 0.016
     },
     crownSmall: {
@@ -411,7 +421,7 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 17,
         fontWeight: '700',
-        color: '#000',
+        color: '#fff',
         marginBottom: height * 0.02
     },
     goalsBtn: {

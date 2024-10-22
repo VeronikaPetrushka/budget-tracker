@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, Dimensions, Alert } from "react-native"
+import { View, Text, ScrollView, StyleSheet, Dimensions, Alert, ImageBackground } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Calendar } from 'react-native-calendars';
 import { useReset } from "../constants/reset";
@@ -50,10 +50,15 @@ const Statistic = () => {
     };
 
     return (
+        <ImageBackground
+        source={require('../assets/back/bg.jpg')}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
         <View style={styles.container}>
             <Text style={styles.titleText}>Calendar</Text>
             <Calendar
-            style={{ width: width * 0.88 }}
+            style={{ width: width * 0.88, borderRadius: 16, overflow: 'hidden', padding: 5}}
                             onDayPress={handleDayPress}
                             markedDates={{
                                 [date.toISOString().split('T')[0]]: { selected: true, selectedColor: '#f9a500' }
@@ -64,7 +69,7 @@ const Statistic = () => {
                                 arrowColor: '#f9a500',
                                 textDayFontWeight: '500',
                                 textMonthFontWeight: 'bold',
-                                textDayHeaderFontWeight: '500'
+                                textDayHeaderFontWeight: '500',
                             }}
                         />
             <View style={{height: height * 0.02}}/>
@@ -94,10 +99,16 @@ const Statistic = () => {
                 )}
             </View>
         </View>
+        </ImageBackground>
     )
 };
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+      },
     container: {
         width: '100%',
         height: '100%',
@@ -106,17 +117,17 @@ const styles = StyleSheet.create({
         padding: 23,
         paddingBottom: 74,
         paddingTop: height * 0.07,
-        backgroundColor: '#fff'
     },
     titleText: {
         fontSize: 17,
         fontWeight: '700',
-        color: '#000',
+        color: '#fff',
+        marginBottom: height * 0.016
     },
     dateText: {
         fontSize: 17,
         fontWeight: '400',
-        color: '#000',
+        color: '#fff',
         marginBottom: height * 0.016
     },
     transactionsContainer: {
